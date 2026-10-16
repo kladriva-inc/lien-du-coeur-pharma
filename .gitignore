@@ -1,0 +1,4 @@
+*.zip
+images/ldc/*.svg
+.DS_Store
+Thumbs.db

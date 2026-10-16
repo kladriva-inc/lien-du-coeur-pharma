@@ -1,0 +1,30 @@
+# Déploie le site sur le VPS Kladriva à chaque push sur main :
+#   https://preview.kladriva.com/<nom-du-depot>/
+# Secrets requis au niveau de l'organisation kladriva-inc (une seule fois) :
+#   PREVIEW_SSH_KEY   clé privée du compte "deploy" sur le VPS
+#   PREVIEW_HOST      161.97.186.244
+name: Preview client
+on:
+  # push:            # réactiver quand PREVIEW_SSH_KEY / PREVIEW_HOST (ou le MCP ada) sont en place
+  #   branches: [main]
+  workflow_dispatch:
+concurrency:
+  group: preview-${{ github.event.repository.name }}
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clé SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PREVIEW_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${{ secrets.PREVIEW_HOST }}" >> ~/.ssh/known_hosts
+      - name: Envoi sur le VPS
+        run: |
+          rsync -az --delete --exclude '.git*' --exclude '*.zip' --exclude 'README.md' \
+            ./ "deploy@${{ secrets.PREVIEW_HOST }}:/var/www/preview/${{ github.event.repository.name }}/"
+      - name: Lien
+        run: echo "Preview : https://preview.kladriva.com/${{ github.event.repository.name }}/" >> $GITHUB_STEP_SUMMARY
