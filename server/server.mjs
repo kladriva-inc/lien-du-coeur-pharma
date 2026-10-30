@@ -15,6 +15,8 @@ const PORT = Number(process.env.PORT || 8080);
 const ROOT = process.env.PUBLIC_DIR || new URL("../public", import.meta.url).pathname;
 const DATA_DIR = process.env.DATA_DIR || "/data";
 const GIT_SHA = process.env.GIT_SHA || "dev";
+// Seul l'hôte canonique est indexable : IP, NodePort ou tout autre hôte → X-Robots-Tag: noindex.
+const CANONICAL_HOST = process.env.CANONICAL_HOST || "lienducoeurpharma.com";
 const RESEND_API_KEY = process.env.RESEND_API_KEY || "";
 const CONTACT_TO = process.env.CONTACT_TO || "lienducoeurpharma@gmail.com";
 const CONTACT_FROM = process.env.CONTACT_FROM || "Site Lien du Cœur Pharma <formulaire@kladriva.com>";
@@ -183,6 +185,7 @@ async function serveStatic(req, res, pathname) {
 
 createServer(async (req, res) => {
   const { pathname } = new URL(req.url, "http://localhost");
+  if (String(req.headers.host || "").split(":")[0] !== CANONICAL_HOST) res.setHeader("X-Robots-Tag", "noindex");
   try {
     if (pathname === "/healthz") return send(res, 200, "ok", { "Content-Type": "text/plain" });
     if (pathname === "/api/version") {
