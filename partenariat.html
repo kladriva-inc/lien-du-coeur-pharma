@@ -157,7 +157,9 @@
                         <div class="row align-items-center justify-content-center position-relative z-index-1">
                             <div class="col-lg-10">    
                                 <!-- start contact form -->
-                                <div class="contact-form-style-05"><form action="#" data-todo="brancher un service d'envoi (Formspree ou PHP chez l'hébergeur)" method="post">
+                                <div class="contact-form-style-05"><form action="/api/contact" method="post">
+                                    <input type="hidden" name="source" value="partenariat">
+                                    <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden"><label>Ne pas remplir <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                                     <div class="row justify-content-center">
                                         <div class="col-md-6 sm-mb-25px">
                                             <input class="mb-25px form-control required" type="text" name="name" placeholder="Nom et fonction*" />
@@ -180,7 +182,7 @@
                                             <textarea class="form-control" cols="20" rows="6" name="comment" placeholder="Votre projet : produits, pays visés, calendrier…"></textarea>
                                         </div>
                                         <div class="col-md-6 mt-25px sm-mt-20px">
-                                            <p class="mb-0 fs-13 lh-24 text-center text-md-start">Vos informations restent confidentielles et ne servent qu’à répondre à votre demande.</p>
+                                            <p class="mb-0 fs-13 lh-24 text-center text-md-start"><label class="d-flex align-items-start text-start"><input type="checkbox" name="consent" class="terms-condition me-10px mt-5px" required> <span>J’accepte que mes informations soient conservées et utilisées uniquement pour répondre à ma demande.</span></label></p>
                                         </div>
                                         <div class="col-md-6 text-center text-md-end mt-25px sm-mt-20px">
                                             <input type="hidden" name="redirect" value="">

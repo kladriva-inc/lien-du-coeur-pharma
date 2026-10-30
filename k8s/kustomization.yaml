@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - ghcr-registry.sealed.yaml
+  - mail.sealed.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+# Le tag est écrit par .github/workflows/deploy.yml (commit [skip ci]) ;
+# ArgoCD (Application lien-du-coeur-pharma, kladriva-inc/gitops envs/prod/) déploie ce commit.
+images:
+  - name: lien-du-coeur-pharma
+    newName: ghcr.io/kladriva-inc/lien-du-coeur-pharma
+    newTag: pending-first-build

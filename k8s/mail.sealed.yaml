@@ -1,0 +1,17 @@
+# Clé API Resend (envoi des courriels du formulaire). SealedSecret portée strict :
+# déchiffrable seulement en Secret lien-du-coeur-pharma-mail dans ce namespace.
+# Rescellement : docs/DEPLOIEMENT.md.
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: lien-du-coeur-pharma-mail
+  namespace: lien-du-coeur-pharma
+spec:
+  encryptedData:
+    RESEND_API_KEY: AgBn6EhzdXYhA/OyKGbLX3gkPlA2wmvW3xoYfLZPmSspGncj5226wfU5A/Q5bQ7yZb7B+z5vquwmujCu+wOOni+LYLfuSCAuRL8SMpaRIeyhCM9tvaiNKLtI41eZRDk1WjAEdyirj/ts4B7gaqvtS6aug/Trdwz4u/ds1E1BRon57/ibXfaX945WT2JJwueBi7lf1un2EcFyOiQyiw14dQ3ZUenIt3CRSMOiBM1KQHOwSnell3hA1XJMcjPUUQUlqYudg7eswYkLqu8Z33vqlKbuuGMadvv8ktYbrUspvWsj7TQrt9DEyo6/uaHyCpCcrqaBm+PWDp1H9xveomo87go8mM2H0Fz110g5dla3Bg1t7SybhHNXuGCrViqszBB/U1Pku18T6UdFwfE4t8+RCcrm2zKcsQqCGcP4jX7+6uYCqBKyZGm3wmBXcsDHuRvzDIE8j7fTLTtLRPWn4ApXXXoYETkijtIkPPjRDcPNNd7mrNdQn3/sA5+I+FBow8v9cU0BzpIwTpBAEN+tsiQPmgMh3UOYUUeiRNIwRjyfQu5nNMWbrTI1xy3LvMgVJouTu6453qNIu3BMbvo9vSykonpHw8K5QWK4i7jhrpth93QFRCr8Kd91jRfl9dJ6csjITcmOOTRsiiqCu3py5OolfihwdRp3mJ9GN929TXUbLlbtm4HcbBRElBy1RmrRO2LPbSrFolKrHtGwnAXq3hn+fYU3NrRJwHMDTETvWYwlPviQtqvGG70=
+  template:
+    metadata:
+      name: lien-du-coeur-pharma-mail
+      namespace: lien-du-coeur-pharma
+    type: Opaque

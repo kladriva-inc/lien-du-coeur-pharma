@@ -1,0 +1,55 @@
+# TLS terminé par Nginx Proxy Manager (ports 80/443 de la VM) qui proxifie vers
+# Traefik en NodePort :30080 — pas de cert-manager : un challenge HTTP-01 émis
+# dans le cluster n'aboutit pas derrière NPM. Vhost NPM + certificat :
+# scripts/npm-vhost.py (docs/DEPLOIEMENT.md).
+# Hôte canonique : l'apex. www → 301 vers https://lienducoeurpharma.com (REGLES §4).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lien-du-coeur-pharma
+  namespace: lien-du-coeur-pharma
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: lienducoeurpharma.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lien-du-coeur-pharma
+                port:
+                  number: 80
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: redirect-www
+  namespace: lien-du-coeur-pharma
+spec:
+  redirectRegex:
+    permanent: true
+    regex: ^https?://www\.lienducoeurpharma\.com/(.*)
+    replacement: https://lienducoeurpharma.com/${1}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lien-du-coeur-pharma-www
+  namespace: lien-du-coeur-pharma
+  annotations:
+    traefik.ingress.kubernetes.io/router.middlewares: lien-du-coeur-pharma-redirect-www@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: www.lienducoeurpharma.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lien-du-coeur-pharma
+                port:
+                  number: 80
