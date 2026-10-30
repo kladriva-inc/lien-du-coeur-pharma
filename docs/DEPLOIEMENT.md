@@ -26,6 +26,16 @@ push sur main ─▶ .github/workflows/deploy.yml
 GitHub Pages (`kladriva-inc.github.io/lien-du-coeur-pharma`) reste actif comme aperçu ;
 le formulaire n'y fonctionne pas (pas de `/api/contact`).
 
+## SEO
+
+- Indexable uniquement sur `lienducoeurpharma.com` : tout autre hôte reçoit
+  `X-Robots-Tag: noindex` (`CANONICAL_HOST`, `server/server.mjs`).
+- Chaque page a un `canonical` vers la prod : l'aperçu GitHub Pages lui est rattaché.
+- `robots.txt` + `sitemap.xml` à la racine (mettre à jour `sitemap.xml` à chaque nouvelle page).
+- JSON-LD `Organization` dans `index.html` : uniquement des coordonnées publiées sur le site.
+- Après la mise en ligne : ajouter la propriété dans Google Search Console (vérification DNS
+  TXT chez WHC) et y soumettre `https://lienducoeurpharma.com/sitemap.xml`.
+
 ## Formulaire de contact
 
 `index.html` (source `accueil`) et `partenariat.html` (source `partenariat`) postent vers
