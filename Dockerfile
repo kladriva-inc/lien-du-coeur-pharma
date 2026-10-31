@@ -1,6 +1,8 @@
 # Site vitrine Lien du Cœur Pharma : fichiers statiques + /api/contact (server/server.mjs).
 # Image construite par .github/workflows/deploy.yml → ghcr.io/kladriva-inc/lien-du-coeur-pharma:<sha8>
 FROM node:22-alpine
+# Relie le paquet GHCR au repo : sans ce lien, le GITHUB_TOKEN de la CI ne peut pas y pousser.
+LABEL org.opencontainers.image.source=https://github.com/kladriva-inc/lien-du-coeur-pharma
 WORKDIR /app
 ARG GIT_SHA=dev
 ENV NODE_ENV=production GIT_SHA=$GIT_SHA PORT=8080 PUBLIC_DIR=/app/public DATA_DIR=/data
