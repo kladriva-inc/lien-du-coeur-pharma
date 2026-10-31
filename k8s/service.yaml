@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lien-du-coeur-pharma
+  namespace: lien-du-coeur-pharma
+spec:
+  selector:
+    app: lien-du-coeur-pharma
+  ports:
+    - port: 80
+      targetPort: 8080

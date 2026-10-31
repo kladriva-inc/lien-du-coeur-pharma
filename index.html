@@ -3,7 +3,16 @@
     <head>
         <title>Lien du Cœur Pharma — Promotion et représentation pharmaceutique au Tchad</title>
         <meta charset="utf-8">
-        <meta name="robots" content="noindex, nofollow">
+        <link rel="canonical" href="https://lienducoeurpharma.com/">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Lien du Cœur Pharma">
+        <meta property="og:locale" content="fr_FR">
+        <meta property="og:title" content="Lien du Cœur Pharma — Promotion et représentation pharmaceutique au Tchad">
+        <meta property="og:description" content="Agence de représentation, de promotion médicale et de formation pour les laboratoires pharmaceutiques au Tchad et en Afrique centrale.">
+        <meta property="og:url" content="https://lienducoeurpharma.com/">
+        <meta property="og:image" content="https://lienducoeurpharma.com/images/logo-horizontal@2x.png">
+        <meta name="twitter:card" content="summary">
+        <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Lien du Cœur Pharma", "description": "Agence de représentation, de promotion médicale et de formation pour les laboratoires pharmaceutiques au Tchad et en Afrique centrale.", "url": "https://lienducoeurpharma.com/", "logo": "https://lienducoeurpharma.com/images/logo-horizontal@2x.png", "email": "lienducoeurpharma@gmail.com", "telephone": ["+23587050573", "+23598050573"], "address": {"@type": "PostalAddress", "streetAddress": "Avenue du Lycée de Gassi, porte 956, Quartier Gassi, 7e arrondissement", "addressLocality": "N’Djamena", "addressCountry": "TD"}, "areaServed": ["TD", "Afrique centrale"]}</script>
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="author" content="Lien du Cœur Pharma">
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
@@ -507,7 +516,9 @@
                         <div class="col-xl-8 col-lg-7">
                             <div class="contact-form-style-05">
                                 <!-- start contact form -->
-                                <form action="#" data-todo="brancher un service d'envoi (Formspree ou PHP chez l'hébergeur)" method="post">
+                                <form action="/api/contact" method="post">
+                                    <input type="hidden" name="source" value="accueil">
+                                    <div aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden"><label>Ne pas remplir <input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
                                     <div class="row justify-content-center">
                                         <div class="col-md-6 sm-mb-25px">
                                             <input class="mb-25px form-control required" type="text" name="name" placeholder="Nom et fonction*" />
@@ -530,7 +541,7 @@
                                             <textarea class="form-control" cols="20" rows="6" name="comment" placeholder="Votre projet : produits, pays visés, calendrier…"></textarea>
                                         </div>
                                         <div class="col-md-6 mt-25px sm-mt-20px">
-                                            <p class="mb-0 fs-13 lh-24 text-center text-md-start">Vos informations restent confidentielles et ne servent qu’à répondre à votre demande.</p>
+                                            <p class="mb-0 fs-13 lh-24 text-center text-md-start"><label class="d-flex align-items-start text-start"><input type="checkbox" name="consent" class="terms-condition me-10px mt-5px" required> <span>J’accepte que mes informations soient conservées et utilisées uniquement pour répondre à ma demande.</span></label></p>
                                         </div>
                                         <div class="col-md-6 text-center text-md-end mt-25px sm-mt-20px">
                                             <input type="hidden" name="redirect" value="">

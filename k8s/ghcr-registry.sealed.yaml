@@ -1,0 +1,22 @@
+# Pull secret GHCR (paquet privé) — SealedSecret en portée cluster-wide, scellé une fois sur la VM
+# avec le certificat public du contrôleur Sealed Secrets (kube-system). Source : whatsapp-gateway,
+# tenants/_shared/ghcr-registry.sealed.yaml, namespace substitué. Le contrôleur le déchiffre en
+# Secret ghcr-registry dans ce namespace : plus rien à copier à la main. À refaire si le PAT change.
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  annotations:
+    sealedsecrets.bitnami.com/cluster-wide: "true"
+  name: ghcr-registry
+  namespace: lien-du-coeur-pharma
+spec:
+  encryptedData:
+    .dockerconfigjson: AgAAGAG4tixQ1nMXxZJsPfnkS3F0AFwhjfpQsjmKJ+czNYxiT0PHrkwmD67LF/9AobEw8Xjtc1Wpsh4+XJ0/6sAWml8EZ3FAU+48LhVdAwpbS3CqNlWU1iqwfPk0MbkXBs3o/y6Obot8yQzglG7sW4iulU1FmVna9Ffjua4aFtW1/DKFBiqrl535hsbEkmNn3rO1MGUclJHN8xoD1qw+BthT7BmKr94zdNkkKHpFCNp5bI+CUgZkxfO/4cqFzZGgK0x9SdrjAtCAxgj/8IjeOVTWA5OzIiiYiFT6silhpqwjE414h8WYv/67WTmdx70tnviZSIGq8AIGxYqcRaD1yprlbHxZPizSOndFX6U4WtobBIiyLOegVfa8ipQr3HiHffQxclw4qUklpPQWvPJe5v/p2jaIdyiaXb4P3ti/EYSVFzY/R7CPhJbBeUOshxRrSLnAMLVQMMoyzEiskIigsCxYut1PEL3lG9O7QMCCfUP/PvLgIYCQClH+QNfwzxXQV7eo7NXLf4Nq8gUT/KymOsZR9rPHEAIXDf0Xh+DGCRfSHIU1P5Lk1YA3B/2321QmjZYf5QtN6yRsC6pjLow9xBCMXtmEm0qutvx4XAoUmZE/l+yBhdE6JY9DLQiBw6YonXuVT+cbYL2lgZ5vnY759ewyQR5XdhN3mwQ80NHDYFofVGYND3NJ7aZjL+IGKCb3QYTgcwoQ+lGcXbyUx6zS7OhOR3h2BiQE/Kg0fDA1QYtH6vA/uEV1Xq9hrtb3JqQYwA70CGl8GxuuGFcvFDHABf3J9LGOZwokN6ShQlkh35C8WCuY6gD6ZhUvfqCqsm2dlCx8WY5Pt/olcECU5JgIIOzr5ugUQleCbgHSHv0AbE/G6MznAnz6+YV+9dmZP6NRqR/HnSR81qwGW0XoYRmOBCd6YEJL2gxRf8IFIF2hopL2dmWM
+  template:
+    metadata:
+      annotations:
+        sealedsecrets.bitnami.com/cluster-wide: "true"
+      name: ghcr-registry
+      namespace: lien-du-coeur-pharma
+    type: kubernetes.io/dockerconfigjson
