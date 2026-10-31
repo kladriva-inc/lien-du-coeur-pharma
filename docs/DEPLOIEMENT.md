@@ -20,7 +20,7 @@ push sur main ─▶ .github/workflows/deploy.yml
 | `k8s/deployment.yaml` | Deployment `RollingUpdate maxUnavailable: 0` + PVC `/data` (messages) |
 | `k8s/ingress.yaml` | Ingress apex ; Ingress `www` + Middleware `redirect-www` (301 → apex) |
 | `k8s/mail.sealed.yaml` | SealedSecret (strict) : `RESEND_API_KEY` |
-| `k8s/ghcr-registry.sealed.yaml` | pull secret GHCR (SealedSecret cluster-wide du parc) |
+| (image) | `ghcr.io/kladriva-inc/lien-du-coeur-pharma` est **publique** : aucun pull secret |
 | `scripts/npm-vhost.py` | vhost NPM + certificat + cron de renouvellement (seul geste hors GitOps) |
 
 GitHub Pages (`kladriva-inc.github.io/lien-du-coeur-pharma`) reste actif comme aperçu ;

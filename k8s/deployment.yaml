@@ -33,8 +33,7 @@ spec:
       labels:
         app: lien-du-coeur-pharma
     spec:
-      imagePullSecrets:
-        - name: ghcr-registry
+      # Image publique sur GHCR : pas de pull secret (le secret du parc reçoit un 403 sur ce paquet).
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
