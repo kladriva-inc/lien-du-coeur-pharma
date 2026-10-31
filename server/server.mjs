@@ -10,6 +10,7 @@
 import { createServer } from "node:http";
 import { appendFile, mkdir, readFile, stat } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
+import { brotliCompressSync, constants as zc, gzipSync } from "node:zlib";
 
 const PORT = Number(process.env.PORT || 8080);
 const ROOT = process.env.PUBLIC_DIR || new URL("../public", import.meta.url).pathname;
@@ -158,8 +159,42 @@ async function handleContact(req, res) {
   return formReply(res, true, "Merci, votre demande a bien été envoyée. Nous vous répondons rapidement.");
 }
 
+// Compression : les fichiers de l'image ne changent jamais, chaque variante (br/gzip) est
+// calculée une fois puis gardée en mémoire. Types texte seulement (images/polices déjà compressées).
+const COMPRESSIBLE = /^(text\/|application\/(json|xml)|image\/svg\+xml)/;
+const compressed = new Map();
+
+function pickEncoding(req, type, size) {
+  if (!COMPRESSIBLE.test(type) || size < 1024) return null;
+  const accept = String(req.headers["accept-encoding"] || "");
+  if (/\bbr\b/.test(accept)) return "br";
+  if (/\bgzip\b/.test(accept)) return "gzip";
+  return null;
+}
+
+function encoded(file, raw, enc) {
+  const key = `${enc}:${file}`;
+  if (!compressed.has(key)) {
+    compressed.set(key, enc === "br"
+      ? brotliCompressSync(raw, { params: { [zc.BROTLI_PARAM_QUALITY]: 11, [zc.BROTLI_PARAM_SIZE_HINT]: raw.length } })
+      : gzipSync(raw, { level: 9 }));
+  }
+  return compressed.get(key);
+}
+
+async function sendFile(req, res, file, type, cache) {
+  const raw = await readFile(file);
+  const enc = pickEncoding(req, type, raw.length);
+  const body = enc ? encoded(file, raw, enc) : raw;
+  const headers = { "Content-Type": type, "Cache-Control": cache, "Content-Length": body.length, Vary: "Accept-Encoding" };
+  if (enc) headers["Content-Encoding"] = enc;
+  return send(res, 200, req.method === "HEAD" ? "" : body, headers);
+}
+
 async function serveStatic(req, res, pathname) {
-  let rel = normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, "");
+  let decoded;
+  try { decoded = decodeURIComponent(pathname); } catch { return send(res, 400, "Requête invalide"); }
+  let rel = normalize(decoded).replace(/^(\.\.[/\\])+/, "");
   if (rel.endsWith("/")) rel += "index.html";
   let file = join(ROOT, rel);
   if (!file.startsWith(ROOT)) return send(res, 403, "Forbidden");
@@ -168,15 +203,12 @@ async function serveStatic(req, res, pathname) {
     if (s.isDirectory()) { file = join(file, "index.html"); s = await stat(file); }
     const type = TYPES[extname(file).toLowerCase()] || "application/octet-stream";
     const cache = type.startsWith("text/html") ? "no-cache" : "public, max-age=604800";
-    const body = req.method === "HEAD" ? "" : await readFile(file);
-    return send(res, 200, body, { "Content-Type": type, "Cache-Control": cache, "Content-Length": s.size });
+    return await sendFile(req, res, file, type, cache);
   } catch {
     // URL propre sans extension : /contact → contact.html
     if (!extname(rel)) {
       try {
-        const body = await readFile(join(ROOT, `${rel}.html`));
-        return send(res, 200, req.method === "HEAD" ? "" : body,
-          { "Content-Type": TYPES[".html"], "Cache-Control": "no-cache" });
+        return await sendFile(req, res, join(ROOT, `${rel}.html`), TYPES[".html"], "no-cache");
       } catch { /* 404 ci-dessous */ }
     }
     return send(res, 404, "Page introuvable", { "Content-Type": "text/plain; charset=utf-8" });
@@ -184,9 +216,11 @@ async function serveStatic(req, res, pathname) {
 }
 
 createServer(async (req, res) => {
-  const { pathname } = new URL(req.url, "http://localhost");
   if (String(req.headers.host || "").split(":")[0] !== CANONICAL_HOST) res.setHeader("X-Robots-Tag", "noindex");
   try {
+    // Pas de new URL(req.url, base) : « // » ou « //x » y est lu comme un hôte et lève une
+    // exception — hors du try, elle arrêtait tout le processus (une requête = pod en panne).
+    const pathname = "/" + String(req.url || "/").split("?")[0].replace(/^\/+/, "");
     if (pathname === "/healthz") return send(res, 200, "ok", { "Content-Type": "text/plain" });
     if (pathname === "/api/version") {
       return send(res, 200, JSON.stringify({ sha: GIT_SHA }), { "Content-Type": "application/json", "Cache-Control": "no-store" });
