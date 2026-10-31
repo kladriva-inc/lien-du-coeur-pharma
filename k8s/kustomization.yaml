@@ -14,4 +14,4 @@ resources:
 images:
   - name: lien-du-coeur-pharma
     newName: ghcr.io/kladriva-inc/lien-du-coeur-pharma
-    newTag: pending-first-build
+    newTag: 44dbe06b
