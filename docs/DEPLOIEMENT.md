@@ -85,6 +85,23 @@ kubectl create secret generic lien-du-coeur-pharma-mail -n lien-du-coeur-pharma 
 6. Après deux ou trois cycles build → bump → sync propres : `automated` dans
    `envs/prod/lien-du-coeur-pharma.yaml` (repo gitops).
 
+## Exception du 2026-10-31 : première image construite à la main
+
+GitHub Actions était bloqué pour toute l'organisation (facturation). Sur décision explicite
+de Stéphane, la première image a été construite sur la VM et poussée sur GHCR (token `gh`
+avec `write:packages`), puis son tag écrit dans `k8s/kustomization.yaml` par un commit
+`[skip ci]` — exactement ce que fait le workflow. ArgoCD reste le seul pilote du déploiement.
+
+```bash
+TAG=$(git rev-parse HEAD | cut -c1-8)
+docker build --build-arg GIT_SHA=$TAG -t ghcr.io/kladriva-inc/lien-du-coeur-pharma:$TAG .
+docker push ghcr.io/kladriva-inc/lien-du-coeur-pharma:$TAG
+```
+
+Le label `org.opencontainers.image.source` (Dockerfile) relie le paquet au repo : sans lui,
+la CI ne pourrait plus y pousser une fois la facturation réglée. **Retour à la normale** : dès
+qu'Actions fonctionne, le prochain merge sur `main` reprend le chemin standard, rien à défaire.
+
 ## Revenir en arrière
 
 Revert du commit fautif (ou du commit `chore(deploy): image … [skip ci]`) par PR ; ArgoCD
