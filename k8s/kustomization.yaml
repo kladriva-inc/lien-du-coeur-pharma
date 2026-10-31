@@ -13,4 +13,4 @@ resources:
 images:
   - name: lien-du-coeur-pharma
     newName: ghcr.io/kladriva-inc/lien-du-coeur-pharma
-    newTag: 44dbe06b
+    newTag: 439e1322
